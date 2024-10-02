@@ -1,0 +1,51 @@
+version: '3'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins_server
+    environment:
+      - JENKINS_ADMIN_USER=${JENKINS_ADMIN_USER}
+      - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home  # Local directory mount
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+
+  hfp-test:
+    build: ./hfp_test
+    container_name: hfp_container
+    volumes:
+      - ./hfp_test:/usr/src/hfp_test
+      - ./results:/usr/src/hfp_test/results  # Add results folder as volume
+    depends_on:
+      - jenkins
+
+  a2dp-test:
+    build: ./a2dp_test
+    container_name: a2dp_container
+    volumes:
+      - ./a2dp_test:/usr/src/a2dp_test
+      - ./results:/usr/src/a2dp_test/results  # Add results folder as volume
+    depends_on:
+      - jenkins
+
+  connect-disconnect-test:
+    build: ./connect_disconnect_test
+    container_name: connect_disconnect_container
+    volumes:
+      - ./connect_disconnect_test:/usr/src/connect_disconnect_test
+      - ./results:/usr/src/connect_disconnect_test/results  # Add results folder as volume
+    depends_on:
+      - jenkins
+
+volumes:
+  jenkins_home:
+    external: false
+
