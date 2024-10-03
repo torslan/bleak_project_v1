@@ -1,5 +1,6 @@
 version: '3'
 services:
+  # Jenkins service
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins_server
@@ -10,42 +11,50 @@ services:
       - "8080:8080"
       - "50000:50000"
     volumes:
-      - ./jenkins_home:/var/jenkins_home  # Local directory mount
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 5
 
-  hfp-test:
-    build: ./hfp_test
-    container_name: hfp_container
+  # Advertising test container
+  advertise-test:
+    build: ./ble_advertise_test
+    container_name: advertise_test
     volumes:
-      - ./hfp_test:/usr/src/hfp_test
-      - ./results:/usr/src/hfp_test/results  # Add results folder as volume
+      - ./ble_advertise_test:/usr/src/ble_advertise_test
     depends_on:
       - jenkins
+    restart: on-failure
 
-  a2dp-test:
-    build: ./a2dp_test
-    container_name: a2dp_container
+  # Receiving test container
+  receive-test:
+    build: ./ble_receive_test
+    container_name: receive_test
     volumes:
-      - ./a2dp_test:/usr/src/a2dp_test
-      - ./results:/usr/src/a2dp_test/results  # Add results folder as volume
+      - ./ble_receive_test:/usr/src/ble_receive_test
     depends_on:
       - jenkins
+    restart: on-failure
 
-  connect-disconnect-test:
-    build: ./connect_disconnect_test
-    container_name: connect_disconnect_container
+  # Sending test container
+  send-test:
+    build: ./ble_sending_test
+    container_name: send_test
     volumes:
-      - ./connect_disconnect_test:/usr/src/connect_disconnect_test
-      - ./results:/usr/src/connect_disconnect_test/results  # Add results folder as volume
+      - ./ble_sending_test:/usr/src/ble_sending_test
     depends_on:
       - jenkins
+    restart: on-failure
+
+  # Sensor test container
+  sensor-test:
+    build: ./ble_sensor_test
+    container_name: sensor_test
+    volumes:
+      - ./ble_sensor_test:/usr/src/ble_sensor_test
+    depends_on:
+      - jenkins
+    restart: on-failure
 
 volumes:
   jenkins_home:
-    external: false
 

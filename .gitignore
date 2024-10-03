@@ -1,6 +1,38 @@
-*.log
-*.pyc
+# Node Modules (if using Node.js in the project)
+node_modules/
+
+# Python environment files
+venv/
 __pycache__/
+
+# Docker-related files
+docker-compose.override.yml
+docker-compose*.yml
+
+# Exclude sensitive Docker and environment files
 .env
-jenkins/jenkins_home/
+.env.*
+
+# Jenkins specific files
+jenkins_home/
+*.log
+
+# Exclude results, logs, and temp files
+results/
+*.log
+*.tmp
+
+# Python bytecode
+*.pyc
+
+# Ignore MacOS specific system files
+.DS_Store
+
+# Ignore SSH keys or sensitive credentials
+*.pem
+*.key
+*.cert
+
+# Ignore sensitive data/config files for tests
+test_config.json
 
