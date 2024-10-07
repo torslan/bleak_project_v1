@@ -1,29 +1,12 @@
-import logging
-import time
+import asyncio
+from bleak import BleakScanner
 
-# Set up logging
-logging.basicConfig(filename='/usr/src/connect_disconnect_test/results/conn_disc_test_results.txt', level=logging.INFO)
+async def real_receive():
+    print("Scanning for BLE devices...")
+    devices = await BleakScanner.discover()
+    for device in devices:
+        print(f"Device: {device.name}, Address: {device.address}")
+    print("BLE scan complete.")
 
-def mock_test_connect_disconnect():
-    logging.info("Starting mock Connectivity/Disconnect test...")
+asyncio.run(real_receive())
 
-    # Simulate connecting to a mock Bluetooth device
-    mock_device = ("AA:BB:CC:DD:EE:FF", "MockConnectivityDevice")
-
-    logging.info(f"Simulated found Bluetooth device {mock_device[1]} with address {mock_device[0]}")
-    
-    # Simulate connecting
-    logging.info(f"Simulating connection to {mock_device[1]}")
-    time.sleep(1)  # Simulate connection delay
-
-    # Simulate successful connection
-    logging.info(f"Connection to {mock_device[1]} successful")
-
-    # Simulate disconnection
-    logging.info(f"Simulating disconnection from {mock_device[1]}")
-    time.sleep(1)  # Simulate disconnection delay
-
-    logging.info(f"Disconnection from {mock_device[1]} successful")
-
-if __name__ == "__main__":
-    mock_test_connect_disconnect()
