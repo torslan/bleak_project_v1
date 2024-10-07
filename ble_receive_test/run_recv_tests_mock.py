@@ -1,12 +1,9 @@
 import asyncio
-from bleak import BleakScanner
 
-async def real_receive():
-    print("Scanning for BLE devices...")
-    devices = await BleakScanner.discover()
-    for device in devices:
-        print(f"Device: {device.name}, Address: {device.address}")
-    print("BLE scan complete.")
+async def mock_receive():
+    print("Simulating BLE receiving... (Mock Test)")
+    await asyncio.sleep(2)
+    print("Receiving simulation complete.")
 
-asyncio.run(real_receive())
+asyncio.run(mock_receive())
 
